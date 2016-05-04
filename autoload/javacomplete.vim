@@ -603,6 +603,10 @@ function! s:CompleteAfterDot(expr)
 	  "  let ti = s:ArrayAccess(ti.fields[idx].t, items[ii])
 	  let members = s:SearchMember(ti, ident, 1, itemkind, 1, 0)
 	  if !empty(members[2])
+	    if !has_key(members[2][0], 't')
+	      " TODO: enum?
+	      let members[2][0].t = ' '
+            endif
 	    let ti = s:ArrayAccess(members[2][0].t, items[ii])
 	    let itemkind = 0
 	    let ii += 1
@@ -2800,6 +2804,10 @@ fu! s:DoGetMemberList(ci, kind)
     let sfieldlist = []
     for field in members[2]
     "for field in get(a:ci, 'fields', [])
+      if !has_key(field, 't')
+        " TODO: enum?
+        let field.t = ' '
+      endif
       if s:IsStatic(field['m'])
 	call add(sfieldlist, field)
       elseif a:kind / 10 == 0
